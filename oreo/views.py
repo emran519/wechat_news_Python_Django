@@ -1,7 +1,6 @@
 from django.forms import model_to_dict
 from django.http import JsonResponse, HttpResponse
 import requests, json
-from django.core import serializers
 # 把模型表引入
 from django.utils import timezone
 from oreo.models import Navigator, User, Article, Collect, Config
@@ -22,13 +21,6 @@ class AppletApi(View):
         else:
             json_dict = {'code': -1, 'msg': "失败", 'data': data}
         return JsonResponse(json_dict, safe=safe)
-
-    def test(self):
-        # 处理QuerySet
-        # ret = serializers.serialize("json", Navigator.objects.all())
-        # return JsonResponse(ret, safe=False)
-        # key = json.loads(r.text)
-        return HttpResponse(r)
 
     # 函数选择器
     def isRequestUrl(request):

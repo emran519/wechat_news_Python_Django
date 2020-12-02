@@ -38,7 +38,7 @@ class Collect(models.Model):
     collect_time = models.DateField()
     # 设置关联
     # article = models.OneToOneField("Article", on_delete=models.DO_NOTHING)
-    article = models.ForeignKey("Article", on_delete=models.DO_NOTHING)
+    article = models.ForeignKey("Article", on_delete=models.DO_NOTHING, null=True)
 
 class Config(models.Model):
     k = models.CharField(primary_key=True, max_length=200)

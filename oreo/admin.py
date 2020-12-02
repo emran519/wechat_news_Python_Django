@@ -183,7 +183,16 @@ class AppletController(View):
             news_logo = request.POST.get('newsLogo')
             status = request.POST.get('status')
             # 更新数据
-            Article.objects.filter(id=news_id).update(title=news_title, text=news_text, title_img=news_logo, status=status)
+            res = Article.objects.filter(id=news_id)
+            if res[0].title_img != news_logo:
+                # 获取照片存放地址
+                src = res[0].title_img[res[0].title_img.rfind('/news/'):]
+                # 删除文件
+                the_file_name = STATICFILES_DIRS[0] + src
+                if os.path.exists(the_file_name):
+                    os.remove(the_file_name)
+            # 更新数据
+            res.update(title=news_title, text=news_text, title_img=news_logo, status=status)
             return AppletController.resJson(code=200, data='更新成功')
         return AppletController.resJson(code=-1, data="不支持的请求方法")
 
@@ -194,7 +203,16 @@ class AppletController(View):
         elif request.method == 'POST':
             news_id = request.POST.get('news_id')
             # 删除数据
-            Article.objects.filter(id=news_id).delete()
+            res = Article.objects.filter(id=news_id)
+            if res[0].title_img:
+                # 获取照片存放地址
+                src = res[0].title_img[res[0].title_img.rfind('/news/'):]
+                # 删除文件
+                the_file_name = STATICFILES_DIRS[0] + src
+                if os.path.exists(the_file_name):
+                    os.remove(the_file_name)
+            # 删除数据
+            res.delete()
             return AppletController.resJson(code=200, data="删除成功")
         return AppletController.resJson(code=-1, data="不支持的请求方法")
 
@@ -220,6 +238,8 @@ class AppletController(View):
             image_src = request.POST.get('image_src')
             article_id = request.POST.get('news_id')
             status = request.POST.get('status')
+            if not article_id:
+                article_id = None
             # 写入数据
             Navigator.objects.create(image_src=image_src, article_id=article_id, status=status, add_time=timezone.now())
             return AppletController.resJson(code=200, data='添加成功')
@@ -234,8 +254,19 @@ class AppletController(View):
             image_src = request.POST.get('image_src')
             article_id = request.POST.get('article_id')
             status = request.POST.get('status')
+            if not article_id:
+                article_id = None
             # 更新数据
-            Navigator.objects.filter(id=navigator_id).update(image_src=image_src, article_id=article_id, status=status)
+            res = Navigator.objects.filter(id=navigator_id)
+            if res[0].image_src != image_src:
+                # 获取照片存放地址
+                src = res[0].image_src[res[0].image_src.rfind('/news/'):]
+                # 删除文件
+                the_file_name = STATICFILES_DIRS[0] + src
+                if os.path.exists(the_file_name):
+                    os.remove(the_file_name)
+            # 更新数据
+            res.update(image_src=image_src, article_id=article_id, status=status)
             return AppletController.resJson(code=200, data='更新成功')
         return AppletController.resJson(code=-1, data="不支持的请求方法")
 
@@ -245,8 +276,16 @@ class AppletController(View):
             return AppletController.resJson(code=-1, data="error")
         elif request.method == 'POST':
             navigator_id = request.POST.get('navigator_id')
+            res = Navigator.objects.filter(id=navigator_id)
+            if res[0].image_src:
+                # 获取照片存放地址
+                src = res[0].image_src[res[0].image_src.rfind('/news/'):]
+                # 删除文件
+                the_file_name = STATICFILES_DIRS[0] + src
+                if os.path.exists(the_file_name):
+                    os.remove(the_file_name)
             # 删除数据
-            Navigator.objects.filter(id=navigator_id).delete()
+            res.delete()
             return AppletController.resJson(code=200, data="删除成功")
         return AppletController.resJson(code=-1, data="不支持的请求方法")
 
